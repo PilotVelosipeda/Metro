@@ -1,6 +1,6 @@
 import java.time.LocalDate;
 
-public record FullInformationMetro(String nameStation, String depth, String date) {
+public record FullInformationMetro(String nameStation, String depth, String date) { //проджект класс (гет,сет,то струнг)
 
     public String toString() {
         return "Name station \"" + nameStation + "\"\n" +

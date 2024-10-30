@@ -23,8 +23,8 @@ public class ParseWebPage {
     //Method get html-code web-page
     public String getHtmlCodeWebPage() throws IOException {
         String url = "https://skillbox-java.github.io/";
-        document = Jsoup.connect(url).get();
-        String htmlCode = String.valueOf(document);
+        document = Jsoup.connect(url).get(); // Jsoup библиотека для работы с веб ресурсами
+        String htmlCode = String.valueOf(document); // из документа, сделать строковую данные String
         FileWriter fileWriter = new FileWriter("src/main/resources/codeHtmlMetro.html");
         fileWriter.write(htmlCode);
         return htmlCode;
@@ -40,21 +40,21 @@ public class ParseWebPage {
         AllLinesAndStationsMetro allLinesAndStationsMetro = new AllLinesAndStationsMetro();
 
         //String regexForNumber = "data-line=\"([0-9]{1,2})|([0-9]+[A-Z]+)|([A-Z]+[0-9]+)\"";
-        elements = document.select(".js-metro-stations");
-        elements.forEach(elem -> {
-            String nameStation = elem.select(".name").text();
-            String numberLine = elem.attr("data-line");
+        elements = document.select(".js-metro-stations"); //elements массив строк . - если есть класс
+        elements.forEach(elem -> { // forEach фор для работы с массивами, декомпозируем (разделяем на части)
+            String nameStation = elem.select(".name").text(); // .text превращает элемент в String
+            String numberLine = elem.attr("data-line"); //.attr атрибут в key
 
             LineAndHerNamesMetro lineAndHerNamesMetro = new LineAndHerNamesMetro();
             lineAndHerNamesMetro.setNames(nameStation);
             lineAndHerNamesMetro.setNumberLineMetro(numberLine);
             allLinesAndStationsMetro.setStations(lineAndHerNamesMetro);
 
-            System.out.println("Number line \"" + numberLine + "\"\nName station \"" + nameStation + "\"");
+ //           System.out.println("Number line \"" + numberLine + "\"\nName station \"" + nameStation + "\"");
         });
 
-        try {
-            String jsonStation = objectMapper.writeValueAsString(allLinesAndStationsMetro);
+        try { // try catch для обработки если есть ошибки
+            String jsonStation = objectMapper.writeValueAsString(allLinesAndStationsMetro); //преобразуем в формат json из строки
             FileWriter fileWriter = new FileWriter("src/main/resources/stations.json");
             fileWriter.write(jsonStation);
             fileWriter.close();
@@ -67,14 +67,16 @@ public class ParseWebPage {
         try {
             for (File currentFile : file.listFiles()) {
                 if (currentFile.isDirectory()) {
+ //                   System.out.println("currentDirectory".concat(String.valueOf(currentFile))); // concat для увеличения скорости конктотенации строк
                     getFilesJsonAndCSV(currentFile);
-                } else if (currentFile.getName().endsWith(".json")) {
+                } else if (currentFile.getName().endsWith(".json")) { // для выбора раcширения .json
                     String json = Files.readString(currentFile.toPath());
                     ObjectMapper objectMapper = new ObjectMapper();
                     jsonObjects = objectMapper.readValue(json,
                             objectMapper.getTypeFactory().constructCollectionType(List.class,
                                     FromJsonToJava.class));
-                    //jsonObjects.forEach(System.out::println);
+
+                    // jsonObjects.forEach(System.out::println);
 
                 } else if (currentFile.getName().endsWith(".csv")) {
                     List<String> lines = Files.readAllLines(currentFile.toPath());
@@ -98,7 +100,7 @@ public class ParseWebPage {
                                         String.valueOf(numberLine)
                                 );
                                 listFullInformationMetro.setStations(fullInformationMetro);
-                                System.out.println(fullInformationMetro);
+//                                System.out.println(fullInformationMetro);
                                 ObjectMapper objectMapper = new ObjectMapper();
 
                                 String strFullInfMetro = objectMapper.writeValueAsString(listFullInformationMetro);
