@@ -1,6 +1,9 @@
+package model;
+
 import java.util.ArrayList;
 
 public class ListFullInformationMetro {
+
     private ArrayList<FullInformationMetro> stations = new ArrayList<>();
 
     public void setStations(FullInformationMetro station) {

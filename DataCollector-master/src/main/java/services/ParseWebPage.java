@@ -1,5 +1,8 @@
+package services;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import model.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -65,8 +68,9 @@ public class ParseWebPage {
 
     public void getFilesJsonAndCSV(File file) throws IOException {
         try {
-            for (File currentFile : file.listFiles()) {
-                if (currentFile.isDirectory()) {
+
+            for (File currentFile : file.listFiles()) { //data раскололи на папки
+                if (currentFile.isDirectory()) { //является ли папкой
  //                   System.out.println("currentDirectory".concat(String.valueOf(currentFile))); // concat для увеличения скорости конктотенации строк
                     getFilesJsonAndCSV(currentFile);
                 } else if (currentFile.getName().endsWith(".json")) { // для выбора раcширения .json
@@ -75,12 +79,11 @@ public class ParseWebPage {
                     jsonObjects = objectMapper.readValue(json,
                             objectMapper.getTypeFactory().constructCollectionType(List.class,
                                     FromJsonToJava.class));
-
-                    // jsonObjects.forEach(System.out::println);
+                    jsonObjects.forEach(stationAndDepths -> System.out.println("Станция и глубина: " + stationAndDepths));
 
                 } else if (currentFile.getName().endsWith(".csv")) {
                     List<String> lines = Files.readAllLines(currentFile.toPath());
-                    //System.out.println("List lines \"" + lines + "\".");
+                    // System.out.println("List lines \"" + lines + "\".");
                     for (int i = 1; i < lines.size(); i++) {
                         String line = lines.get(i);
                         String[] parts = line.split(",");
@@ -91,7 +94,8 @@ public class ParseWebPage {
                         LocalDate numberLine = LocalDate.parse(parts[1], dateTimeFormatter);
 
                         FromCsvToJava fromCsvToJava = new FromCsvToJava(nameStation, numberLine);
-                        //System.out.println(fromCsvToJava);
+                        // System.out.println(fromCsvToJava);
+
                         for (FromJsonToJava currentObjectJson : jsonObjects) {
                             if (currentObjectJson.getStation_name().equals(nameStation)) {
                                 FullInformationMetro fullInformationMetro = new FullInformationMetro(
@@ -100,7 +104,8 @@ public class ParseWebPage {
                                         String.valueOf(numberLine)
                                 );
                                 listFullInformationMetro.setStations(fullInformationMetro);
-//                                System.out.println(fullInformationMetro);
+                                System.out.println(fullInformationMetro);
+
                                 ObjectMapper objectMapper = new ObjectMapper();
 
                                 String strFullInfMetro = objectMapper.writeValueAsString(listFullInformationMetro);

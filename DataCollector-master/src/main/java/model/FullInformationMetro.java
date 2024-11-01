@@ -1,3 +1,5 @@
+package model;
+
 import java.time.LocalDate;
 
 public record FullInformationMetro(String nameStation, String depth, String date) { //проджект класс (гет,сет,то струнг)
